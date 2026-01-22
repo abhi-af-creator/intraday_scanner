@@ -2,7 +2,8 @@
 
 # Trading universe
 SYMBOLS = [
-    "TEST_STOCK"
+    "TEST_STOCK",
+    "TEST_STOCK_2"
 ]
 
 # Timeframe (for historical / intraday replay)
