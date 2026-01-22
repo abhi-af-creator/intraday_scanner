@@ -27,3 +27,10 @@ CAPITAL = 100000          # ₹1,00,000
 RISK_PER_TRADE = 0.005    # 0.5% of capital
 STOP_LOSS_PCT = 0.005     # 0.5%
 TARGET_PCT = 0.01         # 1%
+
+# --- Execution realism ---
+SLIPPAGE_PCT = 0.0005        # 0.05% per trade
+BROKERAGE_PCT = 0.0003       # 0.03% per side
+MAX_TRADES_PER_DAY = 3
+DAILY_MAX_LOSS = 1500        # ₹
+

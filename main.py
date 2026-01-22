@@ -1,11 +1,11 @@
 from config import DATA_PATH, SYMBOLS
 from strategies.symbol_engine import SymbolEngine
 from strategies.performance import PerformanceAnalyzer
-from inputs.mock_news import MockNewsProvider
 from inputs.composite_news import CompositeNewsProvider
 
 
-
+SL_PCT = 0.005
+TGT_PCT = 0.01
 
 
 def main():
@@ -17,11 +17,14 @@ def main():
 
     for symbol in SYMBOLS:
         filename = f"{symbol}_5min_2025.csv"
+
         engine = SymbolEngine(
             symbol,
             DATA_PATH,
             filename,
-            news_provider
+            news_provider,
+            SL_PCT,
+            TGT_PCT
         )
         engines.append(engine)
 

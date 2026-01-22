@@ -4,14 +4,14 @@ from strategies.position_manager import PositionManager
 
 
 class LiveSymbolEngine:
-    def __init__(self, symbol, feed, news_provider, sl_pct, tgt_pct):
+    def __init__(self, symbol, feed, news_provider, sl_pct, tgt_pct,broker):
         self.symbol = symbol
         self.feed = feed
         self.news_provider = news_provider
 
         self.vwap = VWAP()
         self.signal_engine = VWAPSignal()
-        self.position_manager = PositionManager(sl_pct, tgt_pct)
+        self.position_manager = PositionManager(sl_pct, tgt_pct, broker=broker, symbol=symbol)
 
     def run(self):
         print(f"\n🔴 LIVE MODE: {self.symbol}")
