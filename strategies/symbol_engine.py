@@ -13,6 +13,10 @@ class SymbolEngine:
         self.vwap = VWAP()
         self.signal_engine = VWAPSignal()
         self.position_manager = PositionManager()
+    
+    def get_trades(self):
+        return self.position_manager.trades
+
 
     def run(self):
         print(f"\n===== Scanning {self.symbol} =====")
