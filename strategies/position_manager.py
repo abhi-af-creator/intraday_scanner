@@ -11,8 +11,8 @@ from config import (
 class PositionManager:
     def __init__(self, stop_loss_pct, target_pct, broker=None, symbol=None):
         # Strategy parameters
-        self.stop_loss_pct = stop_loss_pct
-        self.target_pct = target_pct
+        self.stop_loss_pct = float(stop_loss_pct)
+        self.target_pct = float(target_pct)
 
         # Broker
         self.broker = broker
@@ -28,23 +28,28 @@ class PositionManager:
         # Risk & tracking
         self.trades = []
         self.trades_today = 0
-        self.day_pnl = 0
+        self.day_pnl = 0.0
 
     # -------------------------
     # Internal helpers
     # -------------------------
 
     def _apply_slippage(self, price, side):
+        price = float(price)   # ✅ CRITICAL FIX
+
         if side == "BUY":
             return price * (1 + SLIPPAGE_PCT)
         else:
             return price * (1 - SLIPPAGE_PCT)
 
     def _apply_costs(self, pnl):
+        pnl = float(pnl)
         brokerage = abs(pnl) * BROKERAGE_PCT * 2
         return pnl - brokerage
 
     def calculate_quantity(self, entry_price):
+        entry_price = float(entry_price)
+
         risk_amount = CAPITAL * RISK_PER_TRADE
         risk_per_share = entry_price * self.stop_loss_pct
 
@@ -58,6 +63,8 @@ class PositionManager:
     # -------------------------
 
     def enter_long(self, price, timestamp):
+        price = float(price)   # ✅ SAFETY CAST
+
         if self.trades_today >= MAX_TRADES_PER_DAY:
             print("⚠️ Max trades reached for the day. BUY blocked.")
             return
@@ -87,7 +94,6 @@ class PositionManager:
             f"| {timestamp}"
         )
 
-        # Broker notification (paper/live)
         if self.broker:
             self.broker.place_order(
                 symbol=self.symbol,
@@ -96,6 +102,7 @@ class PositionManager:
             )
 
     def exit_long(self, price, timestamp, reason):
+        price = float(price)   # ✅ SAFETY CAST
         price = self._apply_slippage(price, "SELL")
 
         raw_pnl = (price - self.entry_price) * self.qty
@@ -119,7 +126,6 @@ class PositionManager:
             f"| {timestamp}"
         )
 
-        # Broker notification
         if self.broker:
             self.broker.place_order(
                 symbol=self.symbol,
@@ -139,7 +145,7 @@ class PositionManager:
     # -------------------------
 
     def on_candle(self, candle, signal):
-        price = candle["close"]
+        price = float(candle["close"])     # ✅ FINAL GUARD
         timestamp = candle["datetime"]
 
         if self.position == "FLAT":
