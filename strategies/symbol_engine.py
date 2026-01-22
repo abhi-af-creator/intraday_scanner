@@ -5,10 +5,11 @@ from strategies.position_manager import PositionManager
 
 
 class SymbolEngine:
-    def __init__(self, symbol, data_path, filename):
+    def __init__(self, symbol, data_path, filename, news_provider):
         self.symbol = symbol
         self.feed = CSVHistoricalFeed(data_path)
         self.feed.load(filename)
+        self.news_provider = news_provider
 
         self.vwap = VWAP()
         self.signal_engine = VWAPSignal()
@@ -27,7 +28,19 @@ class SymbolEngine:
                 candle["close"],
                 current_vwap
             )
-
+            trade_date = candle["datetime"].date()
+            negative_news = self.news_provider.has_negative_news(
+                self.symbol,
+                trade_date
+            )
+            # Block BUY on negative news
+            if signal == "BUY" and negative_news:
+                print(
+                    self.symbol,
+                    candle["datetime"],
+                    "| BUY BLOCKED due to NEGATIVE NEWS"
+                )
+                signal = None
             print(
                 self.symbol,
                 candle["datetime"],
