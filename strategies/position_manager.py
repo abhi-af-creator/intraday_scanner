@@ -7,7 +7,9 @@ from config import (
 
 
 class PositionManager:
-    def __init__(self):
+    def __init__(self, stop_loss_pct, target_pct):
+        self.stop_loss_pct = stop_loss_pct
+        self.target_pct = target_pct
         self.position = "FLAT"
         self.entry_price = None
         self.stop_loss = None
@@ -17,7 +19,7 @@ class PositionManager:
 
     def calculate_quantity(self, entry_price):
         risk_amount = CAPITAL * RISK_PER_TRADE
-        risk_per_share = entry_price * STOP_LOSS_PCT
+        risk_per_share = entry_price * self.stop_loss_pct
 
         if risk_per_share <= 0:
             return 0
@@ -34,8 +36,8 @@ class PositionManager:
 
         self.position = "LONG"
         self.entry_price = price
-        self.stop_loss = price * (1 - STOP_LOSS_PCT)
-        self.target = price * (1 + TARGET_PCT)
+        self.stop_loss = price * (1 - self.stop_loss_pct)
+        self.target = price * (1 + self.target_pct)
 
         print(
             f"🟢 BUY {self.qty} @ {round(price,2)} | "

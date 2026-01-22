@@ -7,8 +7,7 @@ class CSVHistoricalFeed:
         self.data_path = Path(data_path)
         self.df = None
         self.pointer = 0
-
-    def load(self, filename):
+    def load(self, filename, start_date=None, end_date=None):
         file_path = self.data_path / filename
 
         if not file_path.exists():
@@ -17,7 +16,15 @@ class CSVHistoricalFeed:
         self.df = pd.read_csv(file_path)
         self.df["datetime"] = pd.to_datetime(self.df["datetime"])
         self.df = self.df.sort_values("datetime").reset_index(drop=True)
+
+        if start_date:
+            self.df = self.df[self.df["datetime"] >= pd.to_datetime(start_date)]
+
+        if end_date:
+            self.df = self.df[self.df["datetime"] <= pd.to_datetime(end_date)]
+
         self.pointer = 0
+
 
     def stream(self):
         while self.pointer < len(self.df):

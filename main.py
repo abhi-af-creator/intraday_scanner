@@ -2,6 +2,10 @@ from config import DATA_PATH, SYMBOLS
 from strategies.symbol_engine import SymbolEngine
 from strategies.performance import PerformanceAnalyzer
 from inputs.mock_news import MockNewsProvider
+from inputs.composite_news import CompositeNewsProvider
+
+
+
 
 
 def main():
@@ -9,7 +13,7 @@ def main():
 
     engines = []
     performance = PerformanceAnalyzer()
-    news_provider = MockNewsProvider()
+    news_provider = CompositeNewsProvider()
 
     for symbol in SYMBOLS:
         filename = f"{symbol}_5min_2025.csv"

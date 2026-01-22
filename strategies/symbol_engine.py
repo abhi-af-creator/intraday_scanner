@@ -5,15 +5,23 @@ from strategies.position_manager import PositionManager
 
 
 class SymbolEngine:
-    def __init__(self, symbol, data_path, filename, news_provider):
+    def __init__(
+        self,
+        symbol,
+        data_path,
+        filename,
+        news_provider,
+        sl_pct,
+        tgt_pct
+    ):
         self.symbol = symbol
         self.feed = CSVHistoricalFeed(data_path)
         self.feed.load(filename)
-        self.news_provider = news_provider
 
         self.vwap = VWAP()
         self.signal_engine = VWAPSignal()
-        self.position_manager = PositionManager()
+        self.position_manager = PositionManager(sl_pct, tgt_pct)
+        self.news_provider = news_provider
     
     def get_trades(self):
         return self.position_manager.trades
